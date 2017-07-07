@@ -22,7 +22,7 @@
   }).task('wasm', function(callback){
     var files, command;
     files = glob.sync('vendor/src/*.c').join(' ');
-    command = "emcc supercop.c " + files + " -o supercop.js -O2 -s WASM=1";
+    command = "emcc supercop.c " + files + " -o supercop.js -O2 --closure 1 -s WASM=1";
     exec(command, function(error, stdout, stderr){
       if (stdout) {
         console.log(stdout);
