@@ -20,9 +20,10 @@
   gulp.task('build', ['clean', 'wasm', 'browserify', 'minify'], function(){
     gulp.src('supercop.wasm').pipe(gulp.dest(DESTINATION));
   }).task('wasm', function(callback){
-    var files, command;
+    var files, optimize, command;
     files = glob.sync('vendor/src/*.c').join(' ');
-    command = "emcc supercop.c " + files + " -o supercop.js -O2 --closure 1 -s WASM=1";
+    optimize = "-O2 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]";
+    command = "emcc supercop.c " + files + " -o supercop.js -s MODULARIZE=1 -s WASM=1 " + optimize;
     exec(command, function(error, stdout, stderr){
       if (stdout) {
         console.log(stdout);

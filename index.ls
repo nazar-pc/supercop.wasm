@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2016-2017, https://github.com/1p6
  * @license   MIT License, see license.txt
  */
-supercop	= require('./supercop')
+supercop	= require('./supercop')()
 randombytes	= require('randombytes')
 
 exports

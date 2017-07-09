@@ -21,8 +21,10 @@ gulp
 			.pipe(gulp.dest(DESTINATION))
 	)
 	.task('wasm', (callback) !->
-		files	= glob.sync('vendor/src/*.c').join(' ')
-		command	= "emcc supercop.c #files -o supercop.js -O2 --closure 1 -s WASM=1"
+		files		= glob.sync('vendor/src/*.c').join(' ')
+		# Options that are only specified to optimize resulting file size and basically remove unused features
+		optimize	= "-O2 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]"
+		command		= "emcc supercop.c #files -o supercop.js -s MODULARIZE=1 -s WASM=1 #optimize"
 		exec(command, (error, stdout, stderr) !->
 			if stdout
 				console.log(stdout)

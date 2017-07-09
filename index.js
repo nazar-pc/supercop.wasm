@@ -8,7 +8,7 @@
  */
 (function(){
   var supercop, randombytes, x$;
-  supercop = require('./supercop');
+  supercop = require('./supercop')();
   randombytes = require('randombytes');
   x$ = exports;
   x$.createSeed = function(){
