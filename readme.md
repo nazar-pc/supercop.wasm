@@ -16,7 +16,7 @@ var supercop = require('supercop.wasm')
 
 var seed = supercop.createSeed()
 var keys = supercop.createKeyPair(seed)
-var msg = new Buffer('hello there')
+var msg = Buffer.from('hello there')
 var sig = supercop.sign(msg, keys.publicKey, keys.secretKey)
 console.log(supercop.verify(sig, msg, keys.publicKey)) // true
 ```
@@ -25,7 +25,7 @@ Browser:
 requirejs(['supercop.wasm'], function (supercop) {
     var seed = supercop.createSeed()
     var keys = supercop.createKeyPair(seed)
-    var msg = new Buffer('hello there')
+    var msg = Buffer.from('hello there')
     var sig = supercop.sign(msg, keys.publicKey, keys.secretKey)
     console.log(supercop.verify(sig, msg, keys.publicKey)) // true
 })
