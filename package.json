@@ -7,7 +7,7 @@
 		"signature",
 		"webassembly"
 	],
-	"version"         : "4.0.0",
+	"version"         : "4.0.1",
 	"homepage"        : "https://github.com/nazar-pc/supercop.wasm",
 	"author"          : {
 		"name"  : "Nazar Mokrynskyi",
@@ -32,6 +32,8 @@
 	},
 	"files"           : [
 		"dist",
+		"randombytes.js",
+		"randombytes.browser.js",
 		"supercop.js",
 		"supercop.wasm"
 	],
