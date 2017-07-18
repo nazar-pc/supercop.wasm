@@ -39,8 +39,10 @@ gulp
 				(file) !->
 					file.contents	=
 						browserify(
-							entries		: file.path
-							standalone	: 'supercop_wasm'
+							entries			: file.path
+							standalone		: 'supercop_wasm'
+							builtins		: []
+							detectGlobals	: false
 						)
 							.bundle()
 			))

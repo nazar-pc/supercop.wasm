@@ -9,15 +9,15 @@
 (function(){
   var supercop, randombytes, x$;
   supercop = require('./supercop')();
-  randombytes = require('randombytes');
+  randombytes = require('./randombytes');
   x$ = exports;
   x$.createSeed = function(){
     return randombytes(32);
   };
   x$.createKeyPair = function(seed){
     var seedPtr, seedBuf, pubKeyPtr, publicKey, privKeyPtr, privateKey, x$;
-    if (!Buffer.isBuffer(seed)) {
-      throw new Error('not buffers!');
+    if (!(seed instanceof Uint8Array)) {
+      throw new Error('not Uint8Array!');
     }
     seedPtr = supercop._malloc(32);
     seedBuf = new Uint8Array(supercop.HEAPU8.buffer, seedPtr, 32);
@@ -32,14 +32,14 @@
     x$._free(pubKeyPtr);
     x$._free(privKeyPtr);
     return {
-      publicKey: Buffer.from(publicKey),
-      secretKey: Buffer.from(privateKey)
+      publicKey: new Uint8Array(publicKey),
+      secretKey: new Uint8Array(privateKey)
     };
   };
   x$.sign = function(message, publicKey, privateKey){
     var msgArrPtr, msgArr, pubKeyArrPtr, pubKeyArr, privKeyArrPtr, privKeyArr, sigPtr, sig, x$;
-    if (!Buffer.isBuffer(message) || !Buffer.isBuffer(publicKey) || !Buffer.isBuffer(privateKey)) {
-      throw new Error('not buffers!');
+    if (!(message instanceof Uint8Array) || !(publicKey instanceof Uint8Array) || !(privateKey instanceof Uint8Array)) {
+      throw new Error('not Uint8Arrays!');
     }
     msgArrPtr = supercop._malloc(message.length);
     msgArr = new Uint8Array(supercop.HEAPU8.buffer, msgArrPtr, message.length);
@@ -58,12 +58,12 @@
     x$._free(pubKeyArrPtr);
     x$._free(privKeyArrPtr);
     x$._free(sigPtr);
-    return Buffer.from(sig);
+    return new Uint8Array(sig);
   };
   x$.verify = function(sig, message, publicKey){
     var msgArrPtr, msgArr, sigArrPtr, sigArr, pubKeyArrPtr, pubKeyArr, result, x$;
-    if (!Buffer.isBuffer(message) || !Buffer.isBuffer(sig) || !Buffer.isBuffer(publicKey)) {
-      throw new Error('not buffers!');
+    if (!(message instanceof Uint8Array) || !(sig instanceof Uint8Array) || !(publicKey instanceof Uint8Array)) {
+      throw new Error('not Uint8Arrays!');
     }
     msgArrPtr = supercop._malloc(message.length);
     msgArr = new Uint8Array(supercop.HEAPU8.buffer, msgArrPtr, message.length);

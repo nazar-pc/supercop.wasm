@@ -6,14 +6,14 @@
  * @license   MIT License, see license.txt
  */
 supercop	= require('./supercop')()
-randombytes	= require('randombytes')
+randombytes	= require('./randombytes')
 
 exports
 	..createSeed = ->
 		randombytes(32)
 	..createKeyPair = (seed) ->
-		if !Buffer.isBuffer(seed)
-			throw new Error('not buffers!')
+		if !(seed instanceof Uint8Array)
+			throw new Error('not Uint8Array!')
 		seedPtr		= supercop._malloc(32)
 		seedBuf		= new Uint8Array(supercop.HEAPU8.buffer, seedPtr, 32)
 		pubKeyPtr	= supercop._malloc(32)
@@ -27,12 +27,12 @@ exports
 			.._free(pubKeyPtr)
 			.._free(privKeyPtr)
 		{
-			publicKey	: Buffer.from(publicKey)
-			secretKey	: Buffer.from(privateKey)
+			publicKey	: new Uint8Array(publicKey)
+			secretKey	: new Uint8Array(privateKey)
 		}
 	..sign = (message, publicKey, privateKey) ->
-		if !Buffer.isBuffer(message) || !Buffer.isBuffer(publicKey) || !Buffer.isBuffer(privateKey)
-			throw new Error('not buffers!')
+		if !(message instanceof Uint8Array) || !(publicKey instanceof Uint8Array) || !(privateKey instanceof Uint8Array)
+			throw new Error('not Uint8Arrays!')
 		msgArrPtr		= supercop._malloc(message.length)
 		msgArr			= new Uint8Array(supercop.HEAPU8.buffer, msgArrPtr, message.length)
 		pubKeyArrPtr	= supercop._malloc(32)
@@ -50,10 +50,10 @@ exports
 			.._free(pubKeyArrPtr)
 			.._free(privKeyArrPtr)
 			.._free(sigPtr)
-		Buffer.from(sig)
+		new Uint8Array(sig)
 	..verify = (sig, message, publicKey) ->
-		if !Buffer.isBuffer(message) || !Buffer.isBuffer(sig) || !Buffer.isBuffer(publicKey)
-			throw new Error('not buffers!')
+		if !(message instanceof Uint8Array) || !(sig instanceof Uint8Array) || !(publicKey instanceof Uint8Array)
+			throw new Error('not Uint8Arrays!')
 		msgArrPtr		= supercop._malloc(message.length)
 		msgArr			= new Uint8Array(supercop.HEAPU8.buffer, msgArrPtr, message.length)
 		sigArrPtr		= supercop._malloc(64)

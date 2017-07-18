@@ -39,7 +39,9 @@
     }).pipe(tap(function(file){
       file.contents = browserify({
         entries: file.path,
-        standalone: 'supercop_wasm'
+        standalone: 'supercop_wasm',
+        builtins: [],
+        detectGlobals: false
       }).bundle();
     })).pipe(rename({
       basename: 'supercop.wasm.browser'

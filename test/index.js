@@ -5,9 +5,9 @@
  * @copyright Copyright (c) 2016-2017, https://github.com/1p6
  * @license   MIT License, see license.txt
  */
-var test        = require('tape');
-var supercop    = require('..');
-var randombytes = require('randombytes');
+var crypto   = require('crypto');
+var supercop = require('..');
+var test     = require('tape');
 
 var known = {
 	seed      : '370ebebfd430839c75926f459045b2e93718f01ae438a5c145810bb5de83fc45',
@@ -20,13 +20,13 @@ test('key generation', function (t) {
 	t.plan(6);
 
 	var seed = supercop.createSeed();
-	t.is(Buffer.isBuffer(seed), true, 'seed is a buffer');
+	t.is(seed instanceof Uint8Array, true, 'seed is a Uint8Array');
 	t.is(seed.length, 32, "seed's length is 32");
 
 	var keys = supercop.createKeyPair(seed);
-	t.is(Buffer.isBuffer(keys.publicKey), true, 'public key is a buffer');
+	t.is(keys.publicKey instanceof Uint8Array, true, 'public key is a Uint8Array');
 	t.is(keys.publicKey.length, 32, "public key's length is 32");
-	t.is(Buffer.isBuffer(keys.secretKey), true, 'private key is a buffer');
+	t.is(keys.secretKey instanceof Uint8Array, true, 'private key is a Uint8Array');
 	t.is(keys.secretKey.length, 64, "private key's length is 64");
 });
 
@@ -35,13 +35,13 @@ test('key generation (known seed)', function (t) {
 
 	var keys = supercop.createKeyPair(Buffer.from(known.seed, 'hex'));
 
-	t.is(Buffer.isBuffer(keys.publicKey), true, 'public key is a buffer');
+	t.is(keys.publicKey instanceof Uint8Array, true, 'public key is a Uint8Array');
 	t.is(keys.publicKey.length, 32, "public key's length is 32");
-	t.is(keys.publicKey.toString('hex'), known.publicKey, "public key has expected value");
+	t.is(Buffer.from(keys.publicKey).toString('hex'), known.publicKey, "public key has expected value");
 
-	t.is(Buffer.isBuffer(keys.secretKey), true, 'private key is a buffer');
+	t.is(keys.secretKey instanceof Uint8Array, true, 'private key is a Uint8Array');
 	t.is(keys.secretKey.length, 64, "private key's length is 64");
-	t.is(keys.secretKey.toString('hex'), known.secretKey, "private key has expected value");
+	t.is(Buffer.from(keys.secretKey).toString('hex'), known.secretKey, "private key has expected value");
 });
 
 test('signatures', function (t) {
@@ -51,7 +51,7 @@ test('signatures', function (t) {
 	var keys      = supercop.createKeyPair(seed);
 	var signature = supercop.sign(Buffer.from('hello there m8'), keys.publicKey, keys.secretKey);
 
-	t.is(Buffer.isBuffer(signature), true, 'is signature buffer');
+	t.is(signature instanceof Uint8Array, true, 'is signature Uint8Array');
 	t.is(signature.length, 64, "is signature's length 64");
 });
 
@@ -61,9 +61,9 @@ test('signatures (known seed)', function (t) {
 	var keys      = supercop.createKeyPair(Buffer.from(known.seed, 'hex'));
 	var signature = supercop.sign(Buffer.from('hello there m8'), keys.publicKey, keys.secretKey);
 
-	t.is(Buffer.isBuffer(signature), true, 'is signature buffer');
+	t.is(signature instanceof Uint8Array, true, 'is signature Uint8Array');
 	t.is(signature.length, 64, "is signature's length 64");
-	t.is(signature.toString('hex'), known.signature, "signature has expected value");
+	t.is(Buffer.from(signature).toString('hex'), known.signature, "signature has expected value");
 });
 
 test('verify', function (t) {
@@ -74,7 +74,7 @@ test('verify', function (t) {
 	var msg       = Buffer.from('hello there m8');
 	var signature = supercop.sign(msg, keys.publicKey, keys.secretKey);
 
-	var wrongMsg  = randombytes(msg.length);
+	var wrongMsg  = crypto.randomBytes(msg.length);
 	var wrongSeed = supercop.createSeed();
 	var wrongKeys = supercop.createKeyPair(wrongSeed);
 
