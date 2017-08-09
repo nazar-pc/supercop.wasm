@@ -27,7 +27,7 @@
     privateKey = new Uint8Array(supercop.HEAPU8.buffer, privKeyPtr, 64);
     seedBuf.set(seed);
     x$ = supercop;
-    x$._create_keypair(pubKeyPtr, privKeyPtr, seedPtr);
+    x$._ed25519_create_keypair(pubKeyPtr, privKeyPtr, seedPtr);
     x$._free(seedPtr);
     x$._free(pubKeyPtr);
     x$._free(privKeyPtr);
@@ -53,7 +53,7 @@
     pubKeyArr.set(publicKey);
     privKeyArr.set(privateKey);
     x$ = supercop;
-    x$._sign(sigPtr, msgArrPtr, message.length, pubKeyArrPtr, privKeyArrPtr);
+    x$._ed25519_sign(sigPtr, msgArrPtr, message.length, pubKeyArrPtr, privKeyArrPtr);
     x$._free(msgArrPtr);
     x$._free(pubKeyArrPtr);
     x$._free(privKeyArrPtr);
@@ -74,7 +74,7 @@
     msgArr.set(message);
     sigArr.set(sig);
     pubKeyArr.set(publicKey);
-    result = supercop._verify(sigArrPtr, msgArrPtr, message.length, pubKeyArrPtr) === 1;
+    result = supercop._ed25519_verify(sigArrPtr, msgArrPtr, message.length, pubKeyArrPtr) === 1;
     x$ = supercop;
     x$._free(msgArrPtr);
     x$._free(sigArrPtr);

@@ -22,7 +22,7 @@ exports
 		privateKey	= new Uint8Array(supercop.HEAPU8.buffer, privKeyPtr, 64)
 		seedBuf.set(seed)
 		supercop
-			.._create_keypair(pubKeyPtr, privKeyPtr, seedPtr)
+			.._ed25519_create_keypair(pubKeyPtr, privKeyPtr, seedPtr)
 			.._free(seedPtr)
 			.._free(pubKeyPtr)
 			.._free(privKeyPtr)
@@ -45,7 +45,7 @@ exports
 		pubKeyArr.set(publicKey)
 		privKeyArr.set(privateKey)
 		supercop
-			.._sign(sigPtr, msgArrPtr, message.length, pubKeyArrPtr, privKeyArrPtr)
+			.._ed25519_sign(sigPtr, msgArrPtr, message.length, pubKeyArrPtr, privKeyArrPtr)
 			.._free(msgArrPtr)
 			.._free(pubKeyArrPtr)
 			.._free(privKeyArrPtr)
@@ -63,7 +63,7 @@ exports
 		msgArr.set(message)
 		sigArr.set(sig)
 		pubKeyArr.set(publicKey)
-		result = supercop._verify(sigArrPtr, msgArrPtr, message.length, pubKeyArrPtr) == 1
+		result = supercop._ed25519_verify(sigArrPtr, msgArrPtr, message.length, pubKeyArrPtr) == 1
 		supercop
 			.._free(msgArrPtr)
 			.._free(sigArrPtr)
