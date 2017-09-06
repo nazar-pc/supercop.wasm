@@ -16,24 +16,31 @@ Node.js:
 ``` javascript
 var supercop = require('supercop.wasm')
 
-var seed = supercop.createSeed()
-var keys = supercop.createKeyPair(seed)
-var msg = Buffer.from('hello there')
-var sig = supercop.sign(msg, keys.publicKey, keys.secretKey)
-console.log(supercop.verify(sig, msg, keys.publicKey)) // true
+supercop.ready(function () {
+    var seed = supercop.createSeed()
+    var keys = supercop.createKeyPair(seed)
+    var msg = Buffer.from('hello there')
+    var sig = supercop.sign(msg, keys.publicKey, keys.secretKey)
+    console.log(supercop.verify(sig, msg, keys.publicKey)) // true
+});
 ```
 Browser:
 ``` javascript
 requirejs(['supercop.wasm'], function (supercop) {
-    var seed = supercop.createSeed()
-    var keys = supercop.createKeyPair(seed)
-    var msg = (new TextEncoder("utf-8")).encode("hello there")
-    var sig = supercop.sign(msg, keys.publicKey, keys.secretKey)
-    console.log(supercop.verify(sig, msg, keys.publicKey)) // true
+    supercop.ready(function () {
+        var seed = supercop.createSeed()
+        var keys = supercop.createKeyPair(seed)
+        var msg = (new TextEncoder("utf-8")).encode("hello there")
+        var sig = supercop.sign(msg, keys.publicKey, keys.secretKey)
+        console.log(supercop.verify(sig, msg, keys.publicKey)) // true
+    });
 })
 ```
 
 # API
+### supercop.ready(callback)
+* `callback` - Callback function that is called WebAssembly is loaded and library is ready for use
+
 ### var seed = supercop.createSeed()
 Generates a cryptographically-secure 32-byte seed (`Uint8Array`)
 

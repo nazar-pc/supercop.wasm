@@ -23,7 +23,7 @@
     var files, functions, optimize, command;
     files = glob.sync('vendor/src/*.c').join(' ');
     functions = JSON.stringify(['_malloc', '_free', '_ed25519_create_keypair', '_ed25519_sign', '_ed25519_verify']);
-    optimize = "-O2 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]";
+    optimize = "-Oz --llvm-lto 1 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]";
     command = "emcc supercop.c " + files + " -o supercop.js -s MODULARIZE=1 -s EXPORTED_FUNCTIONS='" + functions + "' -s WASM=1 " + optimize;
     exec(command, function(error, stdout, stderr){
       if (stdout) {

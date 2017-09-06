@@ -9,6 +9,7 @@ supercop	= require('./supercop')()
 randombytes	= require('./randombytes')
 
 exports
+	..ready = supercop.then
 	..createSeed = ->
 		randombytes(32)
 	..createKeyPair = (seed) ->

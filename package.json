@@ -5,9 +5,11 @@
 		"ed25519",
 		"supercop",
 		"signature",
-		"webassembly"
+		"webassembly",
+		"wasm",
+		"emscripten"
 	],
-	"version"         : "4.0.2",
+	"version"         : "4.1.0",
 	"homepage"        : "https://github.com/nazar-pc/supercop.wasm",
 	"author"          : {
 		"name"  : "Nazar Mokrynskyi",

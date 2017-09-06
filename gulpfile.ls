@@ -30,7 +30,7 @@ gulp
 			'_ed25519_verify'
 		])
 		# Options that are only specified to optimize resulting file size and basically remove unused features
-		optimize	= "-O2 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]"
+		optimize	= "-Oz --llvm-lto 1 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]"
 		command		= "emcc supercop.c #files -o supercop.js -s MODULARIZE=1 -s EXPORTED_FUNCTIONS='#functions' -s WASM=1 #optimize"
 		exec(command, (error, stdout, stderr) !->
 			if stdout

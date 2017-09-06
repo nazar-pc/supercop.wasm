@@ -11,6 +11,7 @@
   supercop = require('./supercop')();
   randombytes = require('./randombytes');
   x$ = exports;
+  x$.ready = supercop.then;
   x$.createSeed = function(){
     return randombytes(32);
   };
