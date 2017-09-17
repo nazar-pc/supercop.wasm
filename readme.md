@@ -13,7 +13,7 @@ npm install supercop.wasm
 NOTE: In modern versions of Node.js (4.x and higher) `Buffer` inherits `Uint8Array`, so you can pass `Buffer` directly whenever `Uint8Array` is expected.
 
 Node.js:
-``` javascript
+```javascript
 var supercop = require('supercop.wasm')
 
 supercop.ready(function () {
@@ -25,7 +25,7 @@ supercop.ready(function () {
 });
 ```
 Browser:
-``` javascript
+```javascript
 requirejs(['supercop.wasm'], function (supercop) {
     supercop.ready(function () {
         var seed = supercop.createSeed()
