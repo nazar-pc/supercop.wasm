@@ -39,7 +39,7 @@ requirejs(['supercop.wasm'], function (supercop) {
 
 # API
 ### supercop.ready(callback)
-* `callback` - Callback function that is called WebAssembly is loaded and library is ready for use
+* `callback` - Callback function that is called when WebAssembly is loaded and library is ready for use
 
 ### var seed = supercop.createSeed()
 Generates a cryptographically-secure 32-byte seed (`Uint8Array`)
