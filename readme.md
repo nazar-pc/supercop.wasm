@@ -1,4 +1,4 @@
-# supercop.wasm
+# supercop.wasm [![Travis CI](https://img.shields.io/travis/nazar-pc/supercop.wasm/master.svg?label=Travis%20CI)](https://travis-ci.org/nazar-pc/supercop.wasm)
 [orlp/ed25519](https://github.com/orlp/ed25519) compiled to WebAssembly using Emscripten and optimized for small size
 
 Based on [supercop.js](https://github.com/1p6/supercop.js).
