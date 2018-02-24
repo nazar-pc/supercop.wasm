@@ -18,9 +18,6 @@
 	},
 	"license"         : "0BSD",
 	"main"            : "src/index.js",
-	"browser"         : {
-		"./src/randombytes" : "./src/randombytes.browser"
-	},
 	"files"           : [
 		"src"
 	],
