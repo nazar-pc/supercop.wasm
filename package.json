@@ -22,10 +22,7 @@
 		"./src/randombytes" : "./src/randombytes.browser"
 	},
 	"files"           : [
-		"dist",
-		"src",
-		"supercop.js",
-		"supercop.wasm"
+		"src"
 	],
 	"scripts"         : {
 		"test"   : "tape tests/**/*.js",
@@ -33,16 +30,10 @@
 		"build"  : "gulp build"
 	},
 	"devDependencies" : {
-		"browserify"  : "^16.1.0",
-		"del"         : "^3.0.0",
 		"glob"        : "^7.1.2",
 		"gulp"        : "^3.9.1",
 		"gulp-rename" : "^1.2.2",
-		"gulp-tap"    : "^1.0.1",
 		"gulp-uglify" : "^3.0.0",
 		"tape"        : "^4.8.0"
-	},
-	"jspm"            : {
-		"main" : "dist/supercop.wasm.browser.js"
 	}
 }

@@ -5,78 +5,113 @@
  * @license 0BSD
  */
 (function(){
-  var randombytes, lib, allocate, x$;
-  randombytes = require('./randombytes');
-  lib = require('../supercop')();
-  allocate = lib.allocateBytes;
-  x$ = exports;
-  x$.ready = lib.then;
-  /**
-   * @return {!Uint8Array}
-   */
-  x$.createSeed = function(){
-    return randombytes(32);
-  };
-  /**
-   * @param {!Uint8Array} seed
-   *
-   * @return {!Object}
-   */
-  x$.createKeyPair = function(seed){
-    var publicKey, secretKey;
-    if (!(seed instanceof Uint8Array)) {
-      throw new Error('not Uint8Array!');
-    }
-    seed = allocate(0, seed);
-    publicKey = allocate(32);
-    secretKey = allocate(64);
-    lib._ed25519_create_keypair(publicKey, secretKey, seed);
-    publicKey = publicKey.get();
-    secretKey = secretKey.get();
-    lib.freeBytes();
-    return {
-      publicKey: publicKey,
-      secretKey: secretKey
+  var random_bytes;
+  if (typeof crypto !== 'undefined') {
+    /**
+     * @param {number} size
+     *
+     * @return {!Uint8Array}
+     */
+    random_bytes = function(size){
+      var array;
+      array = new Uint8Array(size);
+      crypto.getRandomValues(array);
+      return array;
     };
-  };
-  /**
-   * @param {!Uint8Array} message
-   * @param {!Uint8Array} publicKey
-   * @param {!Uint8Array} secretKey
-   *
-   * @return {!Uint8Array}
-   */
-  x$.sign = function(message, publicKey, secretKey){
-    var signature;
-    if (!(message instanceof Uint8Array && publicKey instanceof Uint8Array && secretKey instanceof Uint8Array)) {
-      throw new Error('not Uint8Arrays!');
+  } else {
+    /**
+     * @param {string} size
+     *
+     * @return {!Uint8Array}
+     */
+    random_bytes = require('crypto').randomBytes;
+  }
+  function Wrapper(lib){
+    var allocate, free;
+    lib = lib();
+    allocate = lib['allocateBytes'];
+    free = lib['freeBytes'];
+    /**
+     * @return {!Uint8Array}
+     */
+    function createSeed(){
+      return random_bytes(32);
     }
-    message = allocate(0, message);
-    publicKey = allocate(0, publicKey);
-    secretKey = allocate(0, secretKey);
-    signature = allocate(64);
-    lib._ed25519_sign(signature, message, message.length, publicKey, secretKey);
-    signature = signature.get();
-    lib.freeBytes();
-    return signature;
-  };
-  /**
-   * @param {!Uint8Array} signature
-   * @param {!Uint8Array} message
-   * @param {!Uint8Array} publicKey
-   *
-   * @return {boolean}
-   */
-  x$.verify = function(signature, message, publicKey){
-    var result;
-    if (!(signature instanceof Uint8Array && message instanceof Uint8Array && publicKey instanceof Uint8Array)) {
-      throw new Error('not Uint8Arrays!');
+    /**
+     * @param {!Uint8Array} seed
+     *
+     * @return {!Object}
+     */
+    function createKeyPair(seed){
+      var publicKey, secretKey;
+      if (!(seed instanceof Uint8Array)) {
+        throw new Error('not Uint8Array!');
+      }
+      seed = allocate(0, seed);
+      publicKey = allocate(32);
+      secretKey = allocate(64);
+      lib['_ed25519_create_keypair'](publicKey, secretKey, seed);
+      publicKey = publicKey['get']();
+      secretKey = secretKey['get']();
+      free();
+      return {
+        publicKey: publicKey,
+        secretKey: secretKey
+      };
     }
-    message = allocate(0, message);
-    publicKey = allocate(0, publicKey);
-    signature = allocate(0, signature);
-    result = lib._ed25519_verify(signature, message, message.length, publicKey) === 1;
-    lib.freeBytes();
-    return result;
-  };
+    /**
+     * @param {!Uint8Array} message
+     * @param {!Uint8Array} publicKey
+     * @param {!Uint8Array} secretKey
+     *
+     * @return {!Uint8Array}
+     */
+    function sign(message, publicKey, secretKey){
+      var signature;
+      if (!(message instanceof Uint8Array && publicKey instanceof Uint8Array && secretKey instanceof Uint8Array)) {
+        throw new Error('not Uint8Arrays!');
+      }
+      message = allocate(0, message);
+      publicKey = allocate(0, publicKey);
+      secretKey = allocate(0, secretKey);
+      signature = allocate(64);
+      lib['_ed25519_sign'](signature, message, message.length, publicKey, secretKey);
+      signature = signature['get']();
+      free();
+      return signature;
+    }
+    /**
+     * @param {!Uint8Array} signature
+     * @param {!Uint8Array} message
+     * @param {!Uint8Array} publicKey
+     *
+     * @return {boolean}
+     */
+    function verify(signature, message, publicKey){
+      var result;
+      if (!(signature instanceof Uint8Array && message instanceof Uint8Array && publicKey instanceof Uint8Array)) {
+        throw new Error('not Uint8Arrays!');
+      }
+      message = allocate(0, message);
+      publicKey = allocate(0, publicKey);
+      signature = allocate(0, signature);
+      result = lib['_ed25519_verify'](signature, message, message.length, publicKey) === 1;
+      free();
+      return result;
+    }
+    return {
+      'ready': lib['then'],
+      'createSeed': createSeed,
+      'createKeyPair': createKeyPair,
+      'sign': sign,
+      'verify': verify
+    };
+  }
+  if (typeof define === 'function' && define['amd']) {
+    define(['./supercop'], Wrapper);
+  } else if (typeof exports === 'object') {
+    module.exports = Wrapper(require('../supercop'));
+  } else {
+    this['supercop_wasm'] = Wrapper(this['__supercopwasm']);
+  }
 }).call(this);

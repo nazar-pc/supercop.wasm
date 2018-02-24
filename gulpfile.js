@@ -5,25 +5,18 @@
  * @license 0BSD
  */
 (function(){
-  var browserify, del, exec, fs, glob, gulp, rename, tap, uglify, DESTINATION;
-  browserify = require('browserify');
-  del = require('del');
+  var exec, glob, gulp, rename, uglify;
   exec = require('child_process').exec;
-  fs = require('fs');
   glob = require('glob');
   gulp = require('gulp');
   rename = require('gulp-rename');
-  tap = require('gulp-tap');
   uglify = require('gulp-uglify');
-  DESTINATION = 'dist';
-  gulp.task('build', ['clean', 'wasm', 'browserify', 'fix_current_script', 'minify'], function(){
-    gulp.src('supercop.wasm').pipe(gulp.dest(DESTINATION));
-  }).task('wasm', function(callback){
+  gulp.task('build', ['wasm', 'minify']).task('wasm', function(callback){
     var files, functions, optimize, command;
     files = glob.sync('vendor/src/*.c').join(' ');
     functions = JSON.stringify(['_malloc', '_free', '_ed25519_create_keypair', '_ed25519_sign', '_ed25519_verify']);
     optimize = "-Oz --llvm-lto 1 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]";
-    command = "emcc src/supercop.c " + files + " --post-js src/bytes_allocation.js -o supercop.js -s MODULARIZE=1 -s EXPORTED_FUNCTIONS='" + functions + "' -s WASM=1 " + optimize;
+    command = "emcc src/supercop.c " + files + " --post-js src/bytes_allocation.js -o src/supercop.js -s MODULARIZE=1 -s 'EXPORT_NAME=\"__supercopwasm\"' -s EXPORTED_FUNCTIONS='" + functions + "' -s WASM=1 " + optimize;
     exec(command, function(error, stdout, stderr){
       if (stdout) {
         console.log(stdout);
@@ -33,29 +26,9 @@
       }
       callback(error);
     });
-  }).task('browserify', ['clean', 'wasm'], function(){
-    return gulp.src('src/index.js', {
-      read: false
-    }).pipe(tap(function(file){
-      file.contents = browserify({
-        entries: file.path,
-        standalone: 'supercop_wasm',
-        builtins: [],
-        detectGlobals: false
-      }).bundle();
-    })).pipe(rename({
-      basename: 'supercop.wasm.browser'
-    })).pipe(gulp.dest(DESTINATION));
-  }).task('fix_current_script', ['browserify'], function(){
-    var contents;
-    contents = fs.readFileSync('dist/supercop.wasm.browser.js', 'utf8');
-    contents = '(function () {var currentScriptReal = document.currentScript;' + contents.replace(/document\.currentScript/g, 'currentScriptReal') + '})();';
-    fs.writeFileSync('dist/supercop.wasm.browser.js', contents);
-  }).task('clean', function(){
-    return del(DESTINATION);
-  }).task('minify', ['browserify', 'fix_current_script'], function(){
-    return gulp.src(DESTINATION + "/*.js").pipe(uglify()).pipe(rename({
+  }).task('minify', function(){
+    return gulp.src("src/index.js").pipe(uglify()).pipe(rename({
       suffix: '.min'
-    })).pipe(gulp.dest(DESTINATION));
+    })).pipe(gulp.dest('src'));
   });
 }).call(this);

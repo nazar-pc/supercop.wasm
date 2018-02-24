@@ -3,33 +3,48 @@
  * @author  Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @license 0BSD
  */
-randombytes	= require('./randombytes')
-lib			= require('../supercop')()
+if typeof crypto != 'undefined'
+	/**
+	 * @param {number} size
+	 *
+	 * @return {!Uint8Array}
+	 */
+	random_bytes	= (size) ->
+		array = new Uint8Array(size)
+		crypto.getRandomValues(array)
+		array
+else
+	/**
+	 * @param {string} size
+	 *
+	 * @return {!Uint8Array}
+	 */
+	random_bytes	= require('crypto').randomBytes
 
-allocate	= lib.allocateBytes
-
-exports
-	..ready = lib.then
+function Wrapper (lib)
+	lib			= lib()
+	allocate	= lib['allocateBytes']
+	free		= lib['freeBytes']
 	/**
 	 * @return {!Uint8Array}
 	 */
-	..createSeed = ->
-		randombytes(32)
+	function createSeed
+		random_bytes(32)
 	/**
 	 * @param {!Uint8Array} seed
 	 *
 	 * @return {!Object}
 	 */
-	..createKeyPair = (seed) ->
+	function createKeyPair (seed)
 		if !(seed instanceof Uint8Array)
 			throw new Error('not Uint8Array!')
 		seed		= allocate(0, seed)
 		publicKey	= allocate(32)
 		secretKey	= allocate(64)
-		lib._ed25519_create_keypair(publicKey, secretKey, seed)
-		publicKey	= publicKey.get()
-		secretKey	= secretKey.get()
-		lib.freeBytes()
+		lib['_ed25519_create_keypair'](publicKey, secretKey, seed)
+		publicKey	= publicKey['get']()
+		secretKey	= secretKey['get']()
+		free()
 		{publicKey, secretKey}
 	/**
 	 * @param {!Uint8Array} message
@@ -38,7 +53,7 @@ exports
 	 *
 	 * @return {!Uint8Array}
 	 */
-	..sign = (message, publicKey, secretKey) ->
+	function sign (message, publicKey, secretKey)
 		if !(
 			message instanceof Uint8Array &&
 			publicKey instanceof Uint8Array &&
@@ -49,9 +64,9 @@ exports
 		publicKey	= allocate(0, publicKey)
 		secretKey	= allocate(0, secretKey)
 		signature	= allocate(64)
-		lib._ed25519_sign(signature, message, message.length, publicKey, secretKey)
-		signature	= signature.get()
-		lib.freeBytes()
+		lib['_ed25519_sign'](signature, message, message.length, publicKey, secretKey)
+		signature	= signature['get']()
+		free()
 		signature
 	/**
 	 * @param {!Uint8Array} signature
@@ -60,7 +75,7 @@ exports
 	 *
 	 * @return {boolean}
 	 */
-	..verify = (signature, message, publicKey) ->
+	function verify (signature, message, publicKey)
 		if !(
 			signature instanceof Uint8Array &&
 			message instanceof Uint8Array &&
@@ -70,6 +85,23 @@ exports
 		message		= allocate(0, message)
 		publicKey	= allocate(0, publicKey)
 		signature	= allocate(0, signature)
-		result		= lib._ed25519_verify(signature, message, message.length, publicKey) == 1
-		lib.freeBytes()
+		result		= lib['_ed25519_verify'](signature, message, message.length, publicKey) == 1
+		free()
 		result
+	{
+		'ready'			: lib['then']
+		'createSeed'	: createSeed
+		'createKeyPair'	: createKeyPair
+		'sign'			: sign
+		'verify'		: verify
+	}
+
+if typeof define == 'function' && define['amd']
+	# AMD
+	define(['./supercop'], Wrapper)
+else if typeof exports == 'object'
+	# CommonJS
+	module.exports = Wrapper(require('../supercop'))
+else
+	# Browser globals
+	@'supercop_wasm' = Wrapper(@'__supercopwasm')
