@@ -23,7 +23,7 @@
 	],
 	"scripts"         : {
 		"test"   : "tape tests/**/*.js",
-		"vendor" : "git clone https://github.com/orlp/ed25519.git vendor",
+		"vendor" : "git clone https://github.com/orlp/ed25519.git vendor; cd vendor; git checkout 7fa6712ef5d581a6981ec2b08ee623314cd1d1c4",
 		"build"  : "gulp build"
 	},
 	"devDependencies" : {
