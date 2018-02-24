@@ -20,7 +20,7 @@
     };
   } else {
     /**
-     * @param {string} size
+     * @param {number} size
      *
      * @return {!Uint8Array}
      */
