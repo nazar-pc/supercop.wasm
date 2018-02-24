@@ -64,7 +64,7 @@ function Wrapper (lib)
 		publicKey	= allocate(0, publicKey)
 		secretKey	= allocate(0, secretKey)
 		signature	= allocate(64)
-		lib['_ed25519_sign'](signature, message, message.length, publicKey, secretKey)
+		lib['_ed25519_sign'](signature, message, message['length'], publicKey, secretKey)
 		signature	= signature['get']()
 		free()
 		signature
@@ -85,7 +85,7 @@ function Wrapper (lib)
 		message		= allocate(0, message)
 		publicKey	= allocate(0, publicKey)
 		signature	= allocate(0, signature)
-		result		= lib['_ed25519_verify'](signature, message, message.length, publicKey) == 1
+		result		= lib['_ed25519_verify'](signature, message, message['length'], publicKey) == 1
 		free()
 		result
 	{
