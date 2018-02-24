@@ -30,7 +30,7 @@ z.set(c,f)};f.free=function(){ja(f);d.splice(d.indexOf(f),1)};d.push(f);return f
 
   return __supercopwasm;
 };
-__supercopwasm.bind({
+__supercopwasm = __supercopwasm.bind({
   _currentScript: typeof document !== 'undefined' ? document.currentScript : undefined,
   _selfLocation: typeof self !== 'undefined' ? self.location : undefined
 });
