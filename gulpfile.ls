@@ -1,8 +1,7 @@
 /**
- * @package   supercop.wasm
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2017, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package supercop.wasm
+ * @author  Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license 0BSD
  */
 browserify	= require('browserify')
 del			= require('del')
@@ -16,7 +15,7 @@ uglify		= require('gulp-uglify')
 DESTINATION	= 'dist'
 
 gulp
-	.task('build', ['clean', 'wasm', 'browserify', 'minify'], !->
+	.task('build', ['clean', 'wasm', 'browserify', 'fix_current_script', 'minify'], !->
 		gulp.src('supercop.wasm')
 			.pipe(gulp.dest(DESTINATION))
 	)
@@ -31,7 +30,7 @@ gulp
 		])
 		# Options that are only specified to optimize resulting file size and basically remove unused features
 		optimize	= "-Oz --llvm-lto 1 --closure 1 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[] -s DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[]"
-		command		= "emcc supercop.c #files -o supercop.js -s MODULARIZE=1 -s EXPORTED_FUNCTIONS='#functions' -s WASM=1 #optimize"
+		command		= "emcc src/supercop.c #files --post-js src/bytes_allocation.js -o supercop.js -s MODULARIZE=1 -s EXPORTED_FUNCTIONS='#functions' -s WASM=1 #optimize"
 		exec(command, (error, stdout, stderr) !->
 			if stdout
 				console.log(stdout)
@@ -41,7 +40,7 @@ gulp
 		)
 	)
 	.task('browserify', ['clean', 'wasm'], ->
-		gulp.src('index.js', {read: false})
+		gulp.src('src/index.js', {read: false})
 			.pipe(tap(
 				(file) !->
 					file.contents	=
@@ -58,10 +57,18 @@ gulp
 			))
 			.pipe(gulp.dest(DESTINATION))
 	)
+	.task('fix_current_script', ['browserify'] !->
+		contents	= fs.readFileSync('dist/supercop.wasm.browser.js', 'utf8')
+		contents	=
+			'(function () {var currentScriptReal = document.currentScript;' +
+				contents.replace(/document\.currentScript/g, 'currentScriptReal') +
+			'})();'
+		fs.writeFileSync('dist/supercop.wasm.browser.js', contents)
+	)
 	.task('clean', ->
 		del(DESTINATION)
 	)
-	.task('minify', ['browserify'], ->
+	.task('minify', ['browserify', 'fix_current_script'], ->
 		gulp.src("#DESTINATION/*.js")
 			.pipe(uglify())
 			.pipe(rename(

@@ -9,43 +9,31 @@
 		"wasm",
 		"emscripten"
 	],
-	"version"         : "4.1.0",
+	"version"         : "5.0.0",
 	"homepage"        : "https://github.com/nazar-pc/supercop.wasm",
-	"author"          : {
-		"name"  : "Nazar Mokrynskyi",
-		"email" : "nazar@mokrynskyi.com",
-		"url"   : "https://cleverstyle.org"
-	},
+	"author"          : "Nazar Mokrynskyi <nazar@mokrynskyi.com>",
 	"repository"      : {
 		"type" : "git",
 		"url"  : "git://github.com/nazar-pc/supercop.wasm.git"
 	},
-	"licenses"        : [
-		{
-			"type" : "MIT",
-			"url"  : "https://github.com/nazar-pc/supercop.wasm/blob/master/license.txt"
-		}
-	],
-	"bugs"            : "https://github.com/nazar-pc/supercop.wasm/issues",
-	"docs"            : "https://github.com/nazar-pc/supercop.wasm",
-	"main"            : "index.js",
+	"license"         : "0BSD",
+	"main"            : "src/index.js",
 	"browser"         : {
-		"./randombytes" : "./randombytes.browser"
+		"./src/randombytes" : "./src/randombytes.browser"
 	},
 	"files"           : [
 		"dist",
-		"randombytes.js",
-		"randombytes.browser.js",
+		"src",
 		"supercop.js",
 		"supercop.wasm"
 	],
 	"scripts"         : {
-		"test"   : "tape test/**/*.js",
+		"test"   : "tape tests/**/*.js",
 		"vendor" : "git clone https://github.com/orlp/ed25519.git vendor",
 		"build"  : "gulp build"
 	},
 	"devDependencies" : {
-		"browserify"  : "^14.5.0",
+		"browserify"  : "^16.1.0",
 		"del"         : "^3.0.0",
 		"glob"        : "^7.1.2",
 		"gulp"        : "^3.9.1",

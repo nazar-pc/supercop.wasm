@@ -1,9 +1,7 @@
 /**
- * @package   supercop.wasm
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2017, Nazar Mokrynskyi
- * @copyright Copyright (c) 2016-2017, https://github.com/1p6
- * @license   MIT License, see license.txt
+ * @package supercop.wasm
+ * @author  Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license 0BSD
  */
 var crypto   = require('crypto');
 var supercop = require('..');

@@ -10,8 +10,6 @@ npm install supercop.wasm
 ```
 
 ## How to use
-NOTE: In modern versions of Node.js (4.x and higher) `Buffer` inherits `Uint8Array`, so you can pass `Buffer` directly whenever `Uint8Array` is expected.
-
 Node.js:
 ```javascript
 var supercop = require('supercop.wasm')
@@ -67,4 +65,8 @@ Verifies a given signature goes with the message and key.
 Feel free to create issues and send pull requests (for big changes create an issue first and link it from the PR), they are highly appreciated!
 
 ## License
-MIT, see license.txt
+Free Public License 1.0.0 / Zero Clause BSD License
+
+https://opensource.org/licenses/FPL-1.0.0
+
+https://tldrlegal.com/license/bsd-0-clause-license
