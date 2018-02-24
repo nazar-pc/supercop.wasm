@@ -101,7 +101,7 @@ if typeof define == 'function' && define['amd']
 	define(['./supercop'], Wrapper)
 else if typeof exports == 'object'
 	# CommonJS
-	module.exports = Wrapper(require('../supercop'))
+	module.exports = Wrapper(require('./supercop'))
 else
 	# Browser globals
 	@'supercop_wasm' = Wrapper(@'__supercopwasm')

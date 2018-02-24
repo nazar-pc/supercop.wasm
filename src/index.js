@@ -110,7 +110,7 @@
   if (typeof define === 'function' && define['amd']) {
     define(['./supercop'], Wrapper);
   } else if (typeof exports === 'object') {
-    module.exports = Wrapper(require('../supercop'));
+    module.exports = Wrapper(require('./supercop'));
   } else {
     this['supercop_wasm'] = Wrapper(this['__supercopwasm']);
   }
